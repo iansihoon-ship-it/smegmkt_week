@@ -1,0 +1,27 @@
+# Virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# Streamlit config
+.streamlit/
+
+# Temporary and analysis scripts (keep repository clean)
+*inspection*.py
+*explore*.py
+*generate*.py
+*run_analysis*.py
+*analysis_plan*.md
+*analysis_report*.md
+*analysis_summary*.txt
+*inspect_data*.txt
+*promotion_analysis*.txt
+product_address_audit_results.csv
+*.png
