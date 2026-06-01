@@ -286,10 +286,13 @@ D["events"] = [
 
 # 4주차 데이터 반영 완료
 print("2. JSON 데이터 객체 D 생성 완료.")
-
 # 3. HTML 파일 로드 및 문자열 갈아끼우기
 with open(html_template_path, "r", encoding="utf-8") as f:
     html_content = f.read()
+
+# 상단 중복 함수 2종 제거 (자바스크립트 중복 선언 구문 에러 방지)
+html_content = re.sub(r'function getWeekdayData\(wk\)\s*\{.*?return\s*\{\s*labels,\s*cost:\s*costAvg,\s*rev:\s*revAvg\s*\}\;\s*\}', '', html_content, flags=re.DOTALL, count=1)
+html_content = re.sub(r'function renderWeekday\(\)\s*\{.*?\}\)\;\s*\}', '', html_content, flags=re.DOTALL, count=1)
 
 # a. const D = { ... } 치환
 # 3주차 대시보드의 D 선언 위치부터 won 헬퍼 함수 직전까지 교체

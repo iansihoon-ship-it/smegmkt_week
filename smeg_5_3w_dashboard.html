@@ -21,125 +21,9 @@
 //# sourceMappingURL=chart.umd.js.map
 
 
-function getWeekdayData(wk) {
-  let filtered = wk === 'all' ? D.daily : D.daily.filter(d => d.wk === wk);
-  
-  let days = ['일', '월', '화', '수', '목', '금', '토'];
-  let sums = { 
-    '월': {cost: 0, rev: 0, cnt: 0}, 
-    '화': {cost: 0, rev: 0, cnt: 0}, 
-    '수': {cost: 0, rev: 0, cnt: 0}, 
-    '목': {cost: 0, rev: 0, cnt: 0}, 
-    '금': {cost: 0, rev: 0, cnt: 0}, 
-    '토': {cost: 0, rev: 0, cnt: 0}, 
-    '일': {cost: 0, rev: 0, cnt: 0} 
-  };
-  
-  filtered.forEach(d => {
-    let dayNum = parseInt(d.date.split('/')[1]);
-    let dateObj = new Date(2026, 4, dayNum); 
-    let dayName = days[dateObj.getDay()];
-    sums[dayName].cost += d.cost;
-    sums[dayName].rev += d.rev;
-    sums[dayName].cnt += 1;
-  });
-  
-  let order = ['월', '화', '수', '목', '금', '토', '일'];
-  let labels = [];
-  let costAvg = [];
-  let revAvg = [];
-  
-  order.forEach(day => {
-    labels.push(day);
-    let cnt = sums[day].cnt || 1;
-    costAvg.push(Math.round(sums[day].cost / cnt));
-    revAvg.push(Math.round(sums[day].rev / cnt));
-  });
-  
-  return { labels, cost: costAvg, rev: revAvg };
-}
 
-function renderWeekday() {
-  const data = getWeekdayData(curWk);
-  
-  if (charts.weekday) charts.weekday.destroy();
-  charts.weekday = new Chart(document.getElementById('weekdayChart'), {
-    data: {
-      labels: data.labels.map(l => l + '요일'),
-      datasets: [
-        {
-          type: 'bar',
-          label: '평균 광고비 (백만 원)',
-          data: data.cost.map(c => +(c / 1e6).toFixed(2)),
-          backgroundColor: 'rgba(90, 155, 240, 0.65)',
-          borderRadius: 4,
-          yAxisID: 'y',
-          order: 2
-        },
-        {
-          type: 'line',
-          label: '평균 ERP 매출액 (백만 원)',
-          data: data.rev.map(r => +(r / 1e6).toFixed(1)),
-          borderColor: '#ed7d31',
-          backgroundColor: '#ed7d31',
-          borderWidth: 2.5,
-          tension: 0.3,
-          pointRadius: 5,
-          yAxisID: 'y1',
-          order: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            color: '#8b93a1',
-            usePointStyle: true,
-            pointStyle: 'circle',
-            padding: 12,
-            font: { family: 'Archivo', size: 10.5 }
-          }
-        },
-        tooltip: {
-          ...tt(),
-          callbacks: {
-            label: cx => ` ${cx.dataset.label}: ${cx.raw}M`
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: '#8b93a1', font: { family: 'Spline Sans Mono' } }
-        },
-        y: {
-          position: 'left',
-          grid: { color: '#262b33' },
-          ticks: {
-            color: '#8b93a1',
-            font: { family: 'Spline Sans Mono' },
-            callback: v => v + 'M'
-          },
-          title: { display: true, text: '광고비 (백만)', color: '#5d6573', font: { size: 10 } }
-        },
-        y1: {
-          position: 'right',
-          grid: { display: false },
-          ticks: {
-            color: '#ed7d31',
-            font: { family: 'Spline Sans Mono' },
-            callback: v => v + 'M'
-          },
-          title: { display: true, text: 'ERP 매출 (백만)', color: '#ed7d31', font: { size: 10 } }
-        }
-      }
-    }
-  });
-}
+
+
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -323,6 +207,7 @@ footer b{color:var(--muted)}
   <button class="chip" data-wk="W1">W1 · 5/01~07</button>
   <button class="chip" data-wk="W2">W2 · 5/08~14</button>
   <button class="chip" data-wk="W3">W3 · 5/15~22</button>
+  <button class="chip" data-wk="W4">W4 · 5/23~29</button>
   <button class="chip" data-wk="W4">W4 · 5/23~29</button>
 </div>
 
