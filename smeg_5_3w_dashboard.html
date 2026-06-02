@@ -1654,7 +1654,7 @@ function renderCorr(){
   // 기여율 차트
   if(charts.contrib)charts.contrib.destroy();
   charts.contrib=new Chart(document.getElementById('contribChart'),{
-    data:{labels:['W1','W2','W3'],datasets:[
+    data:{labels:['W1','W2','W3','W4'],datasets:[
       {type:'bar',label:'온라인 ERP(M)',data:c.contrib.online_erp,backgroundColor:'#3a4150',borderRadius:4,order:2},
       {type:'bar',label:'광고 매출(M)',data:c.contrib.ad_rev,backgroundColor:'#5a9bf0',borderRadius:4,order:2},
       {type:'line',label:'광고 기여율(%)',data:c.contrib.rate_online,borderColor:'#36c6b0',backgroundColor:'#36c6b0',borderWidth:3,tension:.3,pointRadius:6,yAxisID:'y1',order:1}

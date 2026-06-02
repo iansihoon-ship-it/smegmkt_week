@@ -416,6 +416,12 @@ html_content = html_content.replace(
     "W1 5/01~07 · W2 5/08~14 · W3 5/15~22 · W4 5/23~29 (광고리포트 주차 구분에 정렬)"
 )
 
+# h. 기여율 차트(contribChart) 레이블 W4 주차 추가
+html_content = html_content.replace(
+    "data:{labels:['W1','W2','W3'],datasets:[",
+    "data:{labels:['W1','W2','W3','W4'],datasets:["
+)
+
 # 4. 파일 쓰기
 with open(analysis_out, "w", encoding="utf-8") as f:
     f.write(html_content)
