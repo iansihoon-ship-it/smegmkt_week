@@ -21,9 +21,125 @@
 //# sourceMappingURL=chart.umd.js.map
 
 
+function getWeekdayData(wk) {
+  let filtered = wk === 'all' ? D.daily : D.daily.filter(d => d.wk === wk);
+  
+  let days = ['일', '월', '화', '수', '목', '금', '토'];
+  let sums = { 
+    '월': {cost: 0, rev: 0, cnt: 0}, 
+    '화': {cost: 0, rev: 0, cnt: 0}, 
+    '수': {cost: 0, rev: 0, cnt: 0}, 
+    '목': {cost: 0, rev: 0, cnt: 0}, 
+    '금': {cost: 0, rev: 0, cnt: 0}, 
+    '토': {cost: 0, rev: 0, cnt: 0}, 
+    '일': {cost: 0, rev: 0, cnt: 0} 
+  };
+  
+  filtered.forEach(d => {
+    let dayNum = parseInt(d.date.split('/')[1]);
+    let dateObj = new Date(2026, 4, dayNum); 
+    let dayName = days[dateObj.getDay()];
+    sums[dayName].cost += d.cost;
+    sums[dayName].rev += d.rev;
+    sums[dayName].cnt += 1;
+  });
+  
+  let order = ['월', '화', '수', '목', '금', '토', '일'];
+  let labels = [];
+  let costAvg = [];
+  let revAvg = [];
+  
+  order.forEach(day => {
+    labels.push(day);
+    let cnt = sums[day].cnt || 1;
+    costAvg.push(Math.round(sums[day].cost / cnt));
+    revAvg.push(Math.round(sums[day].rev / cnt));
+  });
+  
+  return { labels, cost: costAvg, rev: revAvg };
+}
 
-
-
+function renderWeekday() {
+  const data = getWeekdayData(curWk);
+  
+  if (charts.weekday) charts.weekday.destroy();
+  charts.weekday = new Chart(document.getElementById('weekdayChart'), {
+    data: {
+      labels: data.labels.map(l => l + '요일'),
+      datasets: [
+        {
+          type: 'bar',
+          label: '평균 광고비 (백만 원)',
+          data: data.cost.map(c => +(c / 1e6).toFixed(2)),
+          backgroundColor: 'rgba(90, 155, 240, 0.65)',
+          borderRadius: 4,
+          yAxisID: 'y',
+          order: 2
+        },
+        {
+          type: 'line',
+          label: '평균 ERP 매출액 (백만 원)',
+          data: data.rev.map(r => +(r / 1e6).toFixed(1)),
+          borderColor: '#ed7d31',
+          backgroundColor: '#ed7d31',
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 5,
+          yAxisID: 'y1',
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#8b93a1',
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 12,
+            font: { family: 'Archivo', size: 10.5 }
+          }
+        },
+        tooltip: {
+          ...tt(),
+          callbacks: {
+            label: cx => ` ${cx.dataset.label}: ${cx.raw}M`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#8b93a1', font: { family: 'Spline Sans Mono' } }
+        },
+        y: {
+          position: 'left',
+          grid: { color: '#262b33' },
+          ticks: {
+            color: '#8b93a1',
+            font: { family: 'Spline Sans Mono' },
+            callback: v => v + 'M'
+          },
+          title: { display: true, text: '광고비 (백만)', color: '#5d6573', font: { size: 10 } }
+        },
+        y1: {
+          position: 'right',
+          grid: { display: false },
+          ticks: {
+            color: '#ed7d31',
+            font: { family: 'Spline Sans Mono' },
+            callback: v => v + 'M'
+          },
+          title: { display: true, text: 'ERP 매출 (백만)', color: '#ed7d31', font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -197,7 +313,7 @@ footer b{color:var(--muted)}
   </div>
   <div class="period">
     <div class="big">분석 기간</div>
-    <div class="dt mono">2026.05.01 – 05.22</div>
+    <div class="dt mono">2026.05.01 – 05.29</div>
   </div>
 </header>
 
@@ -207,7 +323,6 @@ footer b{color:var(--muted)}
   <button class="chip" data-wk="W1">W1 · 5/01~07</button>
   <button class="chip" data-wk="W2">W2 · 5/08~14</button>
   <button class="chip" data-wk="W3">W3 · 5/15~22</button>
-  <button class="chip" data-wk="W4">W4 · 5/23~29</button>
   <button class="chip" data-wk="W4">W4 · 5/23~29</button>
 </div>
 
@@ -1052,6 +1167,14 @@ const D = {
       "end": 28,
       "note": "MFF02 출시기념 단독 할인",
       "color": "#e0a93b"
+    },
+    {
+      "name": "신세계V 커피머신",
+      "ch": "신세계몰",
+      "start": 24,
+      "end": 30,
+      "note": "커피머신 연합전 할인",
+      "color": "#8b5cf6"
     }
   ],
   "events": [
@@ -1099,6 +1222,78 @@ const D = {
       "rev": 17245500,
       "detail": "네이버 쇼핑검색 효율 저점 및 오븐 비수기 영향.",
       "date": "5/15"
+    }
+  ],
+  "promoPerf": [
+    {
+      "name": "네이버 가정의 달",
+      "period": "5/01~5/08*",
+      "color": "#36c6b0",
+      "erp": 189.0,
+      "daily": 23.7,
+      "cnt": 531,
+      "top": "업소용 오븐 72M · 소형3 33M · 전기포트 28M",
+      "adch": "네이버 SA+SS",
+      "adcost": 4.9,
+      "adrev": 80.4,
+      "roas": 16.4,
+      "note": "오븐·소형가전 폭넓게 견인. 광고효율 최고 구간"
+    },
+    {
+      "name": "신세계 빅스마일",
+      "period": "5/11~5/17",
+      "color": "#c8102e",
+      "erp": 132.0,
+      "daily": 18.8,
+      "cnt": 240,
+      "top": "빌트인 55M · 소형1 29M · 냉동냉장고 19M",
+      "adch": "메타 DA",
+      "adcost": 5.6,
+      "adrev": 78.1,
+      "roas": 14.0,
+      "note": "빌트인 고단가 품목 집중. DA 디스플레이가 트래픽 견인"
+    },
+    {
+      "name": "롯데 띵삼 위크",
+      "period": "5/11~5/29*",
+      "color": "#5a9bf0",
+      "erp": 118.0,
+      "daily": 6.2,
+      "cnt": 107,
+      "top": "업소용 오븐 93M · 빌트인 11M · 냉동냉장고 9M",
+      "adch": "메타 DA+GFA",
+      "adcost": 10.9,
+      "adrev": 97.6,
+      "roas": 9.0,
+      "note": "업소용 오븐(ALFA43)에 매출 집중. 객단가 높음"
+    },
+    {
+      "name": "29CM 밀크프로머",
+      "period": "5/18~5/29*",
+      "color": "#e0a93b",
+      "erp": 47.7,
+      "daily": 4.0,
+      "cnt": 149,
+      "top": "커피머신 9M · 소형1 7M · 반죽기 4M",
+      "adch": "GFA 카탈로그",
+      "adcost": 1.8,
+      "adrev": 7.7,
+      "roas": 4.3,
+      "note": "MFF02 출시기념 단독전. 소형·커피 라인 중심, 볼륨 소규모"
+    },
+    {
+      "name": "신세계V 커피머신",
+      "period": "5/25~5/31*",
+      "color": "#8b5cf6",
+      "erp": 0.0,
+      "daily": 0.0,
+      "cnt": 0,
+      "top": "-",
+      "adch": "-",
+      "adcost": 0.0,
+      "adrev": 0.0,
+      "roas": 0.0,
+      "note": "행사 초기 매출 집계 중 (가용데이터 5/29까지)"
     }
   ]
 };
@@ -1319,12 +1514,12 @@ function renderProduct(){
 }
 
 function renderGantt(){
-  const days=29, g=document.getElementById('gantt');
+  const days=31, g=document.getElementById('gantt');
   let axis='<div class="gantt-axis">';
   for(let i=0;i<days;i++){const dn=i+1;axis+=`<div class="d">${dn%2===1?'5/'+(dn<10?'0':'')+dn:''}</div>`;}
   axis+='</div>';
   // week dividers inside each track (align to track, after 130px label)
-  const wkLines=[7,14,22]; // boundary after day 7 and 14
+  const wkLines=[7,14,22,29]; // boundary after day 7 and 14
   const divs=wkLines.map(b=>`<div style="position:absolute;top:0;bottom:0;left:${b/days*100}%;border-left:1px dashed var(--line)"></div>`).join('');
   let rows='';
   D.promos.forEach(p=>{

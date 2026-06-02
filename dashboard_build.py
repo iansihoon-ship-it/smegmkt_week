@@ -268,12 +268,13 @@ D["corr"] = {
     }
 }
 
-# 9. promos & events & promoPerf 데이터 정적 복사 및 4주차 인덱스(28) 패치
+# 9. promos & events & promoPerf 데이터 정적 복사 및 4주차 인덱스(30) 패치
 D["promos"] = [
     {"name": "네이버 가정의달", "ch": "네이버", "start": -11, "end": 7, "note": "가정의 달+세일, SDA 13~30%", "color": "#36c6b0"},
     {"name": "신세계 빅스마일", "ch": "신세계몰", "start": 10, "end": 16, "note": "SSG 빅스마일데이, SDA 8~50%", "color": "#c8102e"},
     {"name": "롯데 띵삼 위크", "ch": "롯데몰", "start": 10, "end": 28, "note": "롯데 띵삼 위크, LDA 10~48%", "color": "#5a9bf0"},
-    {"name": "29CM 밀크프로머", "ch": "29CM", "start": 17, "end": 28, "note": "MFF02 출시기념 단독 할인", "color": "#e0a93b"}
+    {"name": "29CM 밀크프로머", "ch": "29CM", "start": 17, "end": 28, "note": "MFF02 출시기념 단독 할인", "color": "#e0a93b"},
+    {"name": "신세계V 커피머신", "ch": "신세계몰", "start": 24, "end": 30, "note": "커피머신 연합전 할인", "color": "#8b5cf6"}
 ]
 
 D["events"] = [
@@ -284,15 +285,90 @@ D["events"] = [
     {"di": 14, "mark": "E", "color": "#e8546b", "title": "SS 효율 저점 · 오븐 구매 감소", "rev": 17245500, "detail": "네이버 쇼핑검색 효율 저점 및 오븐 비수기 영향.", "date": "5/15"}
 ]
 
+D["promoPerf"] = [
+    {
+        "name": "네이버 가정의 달",
+        "period": "5/01~5/08*",
+        "color": "#36c6b0",
+        "erp": 189.0,
+        "daily": 23.7,
+        "cnt": 531,
+        "top": "업소용 오븐 72M · 소형3 33M · 전기포트 28M",
+        "adch": "네이버 SA+SS",
+        "adcost": 4.9,
+        "adrev": 80.4,
+        "roas": 16.4,
+        "note": "오븐·소형가전 폭넓게 견인. 광고효율 최고 구간"
+    },
+    {
+        "name": "신세계 빅스마일",
+        "period": "5/11~5/17",
+        "color": "#c8102e",
+        "erp": 132.0,
+        "daily": 18.8,
+        "cnt": 240,
+        "top": "빌트인 55M · 소형1 29M · 냉동냉장고 19M",
+        "adch": "메타 DA",
+        "adcost": 5.6,
+        "adrev": 78.1,
+        "roas": 14.0,
+        "note": "빌트인 고단가 품목 집중. DA 디스플레이가 트래픽 견인"
+    },
+    {
+        "name": "롯데 띵삼 위크",
+        "period": "5/11~5/29*",
+        "color": "#5a9bf0",
+        "erp": 118.0,
+        "daily": 6.2,
+        "cnt": 107,
+        "top": "업소용 오븐 93M · 빌트인 11M · 냉동냉장고 9M",
+        "adch": "메타 DA+GFA",
+        "adcost": 10.9,
+        "adrev": 97.6,
+        "roas": 9.0,
+        "note": "업소용 오븐(ALFA43)에 매출 집중. 객단가 높음"
+    },
+    {
+        "name": "29CM 밀크프로머",
+        "period": "5/18~5/29*",
+        "color": "#e0a93b",
+        "erp": 47.7,
+        "daily": 4.0,
+        "cnt": 149,
+        "top": "커피머신 9M · 소형1 7M · 반죽기 4M",
+        "adch": "GFA 카탈로그",
+        "adcost": 1.8,
+        "adrev": 7.7,
+        "roas": 4.3,
+        "note": "MFF02 출시기념 단독전. 소형·커피 라인 중심, 볼륨 소규모"
+    },
+    {
+        "name": "신세계V 커피머신",
+        "period": "5/25~5/31*",
+        "color": "#8b5cf6",
+        "erp": 0.0,
+        "daily": 0.0,
+        "cnt": 0,
+        "top": "-",
+        "adch": "-",
+        "adcost": 0.0,
+        "adrev": 0.0,
+        "roas": 0.0,
+        "note": "행사 초기 매출 집계 중 (가용데이터 5/29까지)"
+    }
+]
+
 # 4주차 데이터 반영 완료
 print("2. JSON 데이터 객체 D 생성 완료.")
 # 3. HTML 파일 로드 및 문자열 갈아끼우기
 with open(html_template_path, "r", encoding="utf-8") as f:
     html_content = f.read()
 
-# 상단 중복 함수 2종 제거 (자바스크립트 중복 선언 구문 에러 방지)
-html_content = re.sub(r'function getWeekdayData\(wk\)\s*\{.*?return\s*\{\s*labels,\s*cost:\s*costAvg,\s*rev:\s*revAvg\s*\}\;\s*\}', '', html_content, flags=re.DOTALL, count=1)
-html_content = re.sub(r'function renderWeekday\(\)\s*\{.*?\}\)\;\s*\}', '', html_content, flags=re.DOTALL, count=1)
+# 분석기간 텍스트 헤더 업데이트
+html_content = html_content.replace(
+    '<div class="dt mono">2026.05.01 – 05.22</div>',
+    '<div class="dt mono">2026.05.01 – 05.29</div>'
+)
 
 # a. const D = { ... } 치환
 # 3주차 대시보드의 D 선언 위치부터 won 헬퍼 함수 직전까지 교체
@@ -300,14 +376,15 @@ d_pattern = r"const D = \{.*?const won="
 new_d_block = "const D = " + json.dumps(D, ensure_ascii=False, indent=2) + ";\n\nconst won="
 html_content = re.sub(d_pattern, new_d_block, html_content, flags=re.DOTALL)
 
-# b. W4 칩 필터 버튼 추가
-old_chips = '<button class="chip" data-wk="W3">W3 · 5/15~22</button>'
-new_chips = '<button class="chip" data-wk="W3">W3 · 5/15~22</button>\n  <button class="chip" data-wk="W4">W4 · 5/23~29</button>'
-html_content = html_content.replace(old_chips, new_chips)
+# b. W4 칩 필터 버튼 추가 (중복 방지를 위한 안전 체크)
+if 'data-wk="W4"' not in html_content:
+    old_chips = '<button class="chip" data-wk="W3">W3 · 5/15~22</button>'
+    new_chips = '<button class="chip" data-wk="W3">W3 · 5/15~22</button>\n  <button class="chip" data-wk="W4">W4 · 5/23~29</button>'
+    html_content = html_content.replace(old_chips, new_chips)
 
-# c. Gantt 일수 days=22 -> days=29 확장 및 wkLines=[7,14] -> wkLines=[7,14,22] 갱신
-html_content = html_content.replace("const days=22", "const days=29")
-html_content = html_content.replace("const wkLines=[7,14]", "const wkLines=[7,14,22]")
+# c. Gantt 일수 days=22 -> days=31 확장 및 wkLines=[7,14] -> wkLines=[7,14,22,29] 갱신
+html_content = html_content.replace("const days=22", "const days=31")
+html_content = html_content.replace("const wkLines=[7,14]", "const wkLines=[7,14,22,29]")
 
 # d. WEEKS 리스트 W4 추가
 html_content = html_content.replace("const WEEKS=['W1','W2','W3']", "const WEEKS=['W1','W2','W3','W4']")
@@ -348,3 +425,4 @@ with open(smeg_out, "w", encoding="utf-8") as f:
 print(f"4. 성공적으로 기준 템플릿 대시보드 업데이트 완료: {smeg_out}")
 
 print("=== 대시보드 자동 빌드 및 갱신 성공 ===")
+
