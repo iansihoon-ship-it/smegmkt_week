@@ -10,9 +10,10 @@ prev_erp_path = os.path.join(base_dir, "통합매출현황_6_1w.xlsx")
 curr_erp_path = os.path.join(base_dir, "통합매출현황_6_3w.xlsx")
 curr_ad_path = os.path.join(base_dir, "(HM) 스메그_6월 주간리포트_260619.xlsx")
 
-html_template_path = r"c:\Users\smegkorea\smegkorea\mkt_week\smeg_5_3w_dashboard.html"
+html_template_path = r"c:\Users\smegkorea\smegkorea\mkt_week\index.html"
 analysis_out = r"c:\Users\smegkorea\smegkorea\mkt_week\analysis_dashboard.html"
-smeg_out = r"c:\Users\smegkorea\smegkorea\mkt_week\smeg_5_3w_dashboard.html"
+smeg_out = r"c:\Users\smegkorea\smegkorea\mkt_week\index.html"
+
 
 print("1. 데이터 파일 로딩 시작...")
 df_erp_1w = pd.read_excel(prev_erp_path, sheet_name="Sheet1")
